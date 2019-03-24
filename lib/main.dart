@@ -1,26 +1,36 @@
 import 'package:flutter/material.dart';
 import "package:flare_flutter/flare_actor.dart";
-import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(App());
+
+dynamic data = {
+  'rDone': 'Ez! We did it!',
+  'rSkip': 'No, they cant :(',
+  'words': ['Cat', 'Bat', 'Mat', 'Sad', 'Simplification'],
+  'defRes': {'team1': 0, 'team2': 0}
+};
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData.dark(),
-      home: HomePage(),
+      home: Home(Store(data['words'], data['defRes'])),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  dynamic data = {
-    'rDone' : 'Ez! We did it!',
-    'rSkip' : 'No, they cant :(',
-    'words': ['cat', 'bat', 'mat', 'sad'],
-  };
+class Store {
+  List<String> remains;
+  dynamic result;
+  Store(this.remains, this.result) {
+    remains.shuffle();
+  }
+}
+
+class Home extends StatelessWidget {
+  final Store store;
+  const Home(this.store);
 
   @override
   Widget build(BuildContext context) {
@@ -32,22 +42,24 @@ class HomePage extends StatelessWidget {
     return Scaffold(
         body: Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(30),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           StreamBuilder(
-            stream: Stream.periodic(Duration(seconds: 1), (i) => 60 - i),
+            stream: Stream.periodic(Duration(seconds: 1), (i) => 10 - i),
             builder: (ctx, snp) {
+              var tick = snp?.data ?? 60;
+              print('tick' + store.result.toString());
               return Text(
-                '${snp?.data ?? 60}',
+                '$tick',
                 style: text.display4,
               );
             },
           ),
           space,
           Text(
-            'Simplification',
+            '${store.remains[0]}',
             style: text.display3,
           ),
           space,
@@ -69,7 +81,10 @@ class HomePage extends StatelessWidget {
         color: gotIt ? Colors.green : Colors.red,
         padding: EdgeInsets.all(30),
         child: Text(title),
-        onPressed: () {},
+        onPressed: () {
+          store.result['team1'] += gotIt ? 1 : -1;
+          print('some' + store.result['team1']);
+        },
       ),
     );
   }
