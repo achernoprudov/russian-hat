@@ -1,33 +1,51 @@
 enum Action { Ready, Guess, Skip, Timeout }
 
 abstract class State {
+  int team;
+  dynamic data;
+  List<String> words;
+  State(this.team, this.data, this.words);
   State consume(Action action);
+
+  String word() => words.first;
 }
 
-class InitState extends State {
+class ScoreState extends State {
+  ScoreState(data) : super(0, data, []);
+
   @override
-  consume(action) {
-    return null;
+  State consume(Action action) {
+    return ReadyState(0, data, words);
   }
 }
 
 class ReadyState extends State {
+  ReadyState(team, data, remains) : super(team, data, remains);
+
   @override
   consume(action) {
-    return null;
+    return TimerState(team, data, words);
   }
 }
 
 class TimerState extends State {
-  int team;
-  List<String> remains;
-  dynamic result;
-
+  TimerState(team, data, remains) : super(team, data, remains);
   @override
   consume(action) {
-    if (action == Action.Timeout) return ReadyState();
-    if (action == Action.Guess) return this;
-    if (action == Action.Skip) return this;
-    return null;
+    if (action == Action.Timeout) return ReadyState(next(), data, words);
+    if (action == Action.Guess) {
+      data[team] += 1;
+      words.removeAt(0);
+      if (words.isEmpty) {
+        return ScoreState(data);
+      }
+      return this;
+    }
+    if (action == Action.Skip) {
+      words.shuffle();
+      return this;
+    }
   }
+
+  int next() => team ^ 1;
 }
