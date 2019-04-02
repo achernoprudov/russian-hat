@@ -11,11 +11,11 @@ abstract class Page {
   String word() => words.first;
 }
 
-class ScorePage extends Page {
-  ScorePage(data) : super(0, data, [], 0);
+class InitPage extends Page {
+  InitPage(data) : super(0, data, [], 0);
 
   @override
-  consume(action) => action == Action.Next ? ReadyPage(0, data, words) : this;
+  consume(action) => action ==Action.Next ? ReadyPage(0, data, data['words']) : this;
 }
 
 class ReadyPage extends Page {
@@ -49,4 +49,11 @@ class TimerPage extends Page {
   }
 
   int next() => team ^ 1;
+}
+
+class ScorePage extends Page {
+  ScorePage(data) : super(0, data, [], 0);
+
+  @override
+  consume(action) => action == Action.Next ? ReadyPage(0, data, words) : this;
 }

@@ -6,9 +6,10 @@ void main() => runApp(App());
 
 final dynamic data = {
   0:0, 1:0,
-  'rPrepare0': 'You are cute kitties and only you can fight these bold puppies!\n\nPress the button when you ready!',
-  'rPrepare1': 'You are brave puppies and there is your chance to show who is boss there!\n\nPress the button when you ready!',
+  'rPrepare0': 'You are cute kitties team and only you can fight these bold puppies!\n\nPress the button when you ready!',
+  'rPrepare1': 'You are brave puppies team and there is your chance to show who is boss there!\n\nPress the button when you ready!',
   'rScore': 'Score',
+  'rRules': 'Hi there! It is russian hat!\nIts team game where you have to bla-bla.\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n',
   'rAgain': 'It was fun. We want more!',
   'rReady': 'We are ready! Let\'s rock!',
   'rDone': 'Ez! We did it!',
@@ -24,9 +25,8 @@ class App extends StatelessWidget {
       home: Scaffold(body: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(30),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [Screen(data)],
+        child: SingleChildScrollView(
+          child: Screen(data),
         ))),
     );
   }
@@ -36,7 +36,7 @@ class Screen extends StatefulWidget {
   dynamic data;
   Screen(this.data);
   @override
-  _ScreenState createState() => _ScreenState(ReadyPage(0, data, data['words']));
+  _ScreenState createState() => _ScreenState(InitPage(data));
 }
 
 class _ScreenState extends State<Screen> {
@@ -53,24 +53,26 @@ class _ScreenState extends State<Screen> {
     var head = text.display4;
     var space = SizedBox(width: 20, height: 30);
 
-    if (page is ReadyPage) return Column(
-      children: [
-        Text(data['rPrepare${page.team}'], style: sub),
-        space,
-        btn(true, data['rReady']),
-      ],
-    );
+    if (page is InitPage) return Column(children: [
+      flare("res/hat.flr"),
+      Text(data['rRules'], style: sub,),
+      btn(true, data['rReady']),
+    ],);
 
-    if (page is ScorePage) return Column(
-      children: [
-        Text(data['rScore'], style: head),
-        space,
-        Text('Kitties: ${data[0]}', style: body),
-        Text('Puppies: ${data[1]}', style: body),
-        space,
-        btn(true, data['rAgain']),
-      ],
-    );
+    if (page is ReadyPage) return Column(children: [
+      Text(data['rPrepare${page.team}'], style: sub),
+      space,
+      btn(true, data['rReady']),
+    ],);
+
+    if (page is ScorePage) return Column(children: [
+      Text(data['rScore'], style: head),
+      space,
+      Text('Kitties: ${data[0]}', style: body),
+      Text('Puppies: ${data[1]}', style: body),
+      space,
+      btn(true, data['rAgain']),
+    ],);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -84,14 +86,19 @@ class _ScreenState extends State<Screen> {
     );
   }
 
-  Widget btn(next, title) {
-     return FlatButton(
-        color: next ? Colors.green : Colors.red,
-        padding: EdgeInsets.all(30),
-        child: Text(title),
-        onPressed: () => send(next ? Action.Next : Action.Skip),
-      );
-  }
+  Widget btn(next, title) => FlatButton(
+    color: next ? Colors.green : Colors.red,
+    padding: EdgeInsets.all(30),
+    child: Text(title),
+    onPressed: () => send(next ? Action.Next : Action.Skip),
+  );
+
+  Widget flare(name) => Container(
+    height: 200, child: FlareActor(name, 
+    alignment: Alignment.topCenter, 
+    fit: BoxFit.fitHeight, 
+    animation: "run"),
+  );
 
   send(Action action) => setState(() => page = page.consume(action));
 }
