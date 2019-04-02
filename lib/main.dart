@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import "package:flare_flutter/flare_actor.dart";
+import 'package:russian_hat/page.dart';
 
 void main() => runApp(App());
 
-dynamic data = {
+final dynamic data = {
+  0:0, 1:0,
   'rDone': 'Ez! We did it!',
   'rSkip': 'No, they cant :(',
   'words': ['Cat', 'Bat', 'Mat', 'Sad', 'Simplification'],
-  'defRes': {'team1': 0, 'team2': 0}
 };
 
 class App extends StatelessWidget {
@@ -15,32 +16,64 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Home(Store(data['words'], data['defRes'])),
+      home: Home(),
     );
-  }
-}
-
-class Store {
-  List<String> remains;
-  dynamic result;
-  Store(this.remains, this.result) {
-    remains.shuffle();
   }
 }
 
 class Home extends StatelessWidget {
-  final Store store;
-  const Home(this.store);
+  const Home();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: Screen(data));
+  }
+}
+
+class Screen extends StatefulWidget {
+  dynamic data;
+  Screen(this.data);
+  @override
+  _ScreenState createState() => _ScreenState(ReadyPage(0, data, data['words']));
+}
+
+class _ScreenState extends State<Screen> {
+  Page page;
+  _ScreenState(this.page);
 
   @override
   Widget build(BuildContext context) {
     var text = Theme.of(context).textTheme;
-    var space = SizedBox(
-      width: 20,
-      height: 30,
+    var space = SizedBox(width: 20, height: 30);
+
+    if (page is ReadyPage) return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Command ${page.team}'),
+          space,
+          btn(true),
+        ],
+      ),
     );
-    return Scaffold(
-        body: Container(
+
+    if (page is ScorePage) return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Horray!', style: text.display3),
+          Text('Command 2 win!!!', style: text.display3),
+          space,
+          btn(true),
+        ],
+      ),
+    );
+
+    return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.all(30),
       child: Column(
@@ -50,42 +83,26 @@ class Home extends StatelessWidget {
             stream: Stream.periodic(Duration(seconds: 1), (i) => 10 - i),
             builder: (ctx, snp) {
               var tick = snp?.data ?? 60;
-              print('tick' + store.result.toString());
-              return Text(
-                '$tick',
-                style: text.display4,
-              );
+              return Text('$tick', style: text.display4,);
             },
           ),
           space,
-          Text(
-            '${store.remains[0]}',
-            style: text.display3,
-          ),
+          Text(page.word(), style: text.display3),
           space,
-          Row(
-            children: [
-              btn(data['rDone'], true),
-              space,
-              btn(data['rSkip'], false),
-            ],
-          )
+          Row(children: [btn(true), space, btn(false)])
         ],
-      ),
-    ));
-  }
-
-  Widget btn(title, gotIt) {
-    return Expanded(
-      child: FlatButton(
-        color: gotIt ? Colors.green : Colors.red,
-        padding: EdgeInsets.all(30),
-        child: Text(title),
-        onPressed: () {
-          store.result['team1'] += gotIt ? 1 : -1;
-          print('some' + store.result['team1']);
-        },
       ),
     );
   }
+
+  Widget btn(next) {
+     return FlatButton(
+        color: next ? Colors.green : Colors.red,
+        padding: EdgeInsets.all(30),
+        child: Text(next ? data['rDone'] : data['rSkip']),
+        onPressed: () => send(next ? Action.Next : Action.Skip),
+      );
+  }
+
+  send(Action action) => setState(() => page = page.consume(action));
 }

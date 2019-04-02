@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:russian_hat/state.dart';
+import 'package:russian_hat/page.dart';
 
 void main() {
-  group('TimerState', () {
+  group('TimerPage', () {
     var team = 0;
-    TimerState state;
+    TimerPage page;
 
     setUp(() {
       final defaultData = {
@@ -14,58 +14,58 @@ void main() {
         'words': ['foo', 'bar', 'dao', 'zin', 'cat', 'usa', 'ursa'],
       };
 
-      state = TimerState(team, defaultData, defaultData['words']);
+      page = TimerPage(team, defaultData, defaultData['words']);
     });
 
     test(
         'adds one to current team score, removes first word' +
-            ' and returns TimerState when consumes Action.Guess ' +
+            ' and returns TimerPage when consumes Action.Guess ' +
             ' and stil doesnt have words', () {
-      var firstWord = state.word();
-      var newState = state.consume(Action.Guess);
+      var firstWord = page.word();
+      var newPage = page.consume(Action.Next);
 
-      expect(newState, isInstanceOf<TimerState>());
-      expect(newState.data[team], equals(1));
-      expect(newState.words, isNot(contains(firstWord)));
+      expect(newPage, isInstanceOf<TimerPage>());
+      expect(newPage.data[team], equals(1));
+      expect(newPage.words, isNot(contains(firstWord)));
     });
 
     test(
-        'returns ScoreState when consumes Action.Guess ' +
+        'returns ScorePage when consumes Action.Guess ' +
             ' and there are no words left', () {
-      state.words = ['foo'];
-      var newState = state.consume(Action.Guess);
+      page.words = ['foo'];
+      var newPage = page.consume(Action.Next);
 
-      expect(newState, isInstanceOf<ScoreState>());
-      expect(newState.data[team], equals(1));
+      expect(newPage, isInstanceOf<ScorePage>());
+      expect(newPage.data[team], equals(1));
     });
 
-    test('shuffle words and return TimerState when consumes Action.Skip ', () {
-      var firstWord = state.word();
-      var newState = state.consume(Action.Skip);
+    test('shuffle words and return TimerPage when consumes Action.Skip ', () {
+      var firstWord = page.word();
+      var newPage = page.consume(Action.Skip);
 
-      expect(newState, isInstanceOf<TimerState>());
-      expect(newState.data[team], equals(0)); // same score
-      expect(newState.word(), isNot(equals(firstWord)));
+      expect(newPage, isInstanceOf<TimerPage>());
+      expect(newPage.data[team], equals(0)); // same score
+      expect(newPage.word(), isNot(equals(firstWord)));
     }, retry: 3);
 
     test(
-        'returns ReadyState when consumes Action.Timeout', () {
-      var newState = state.consume(Action.Timeout);
+        'returns ReadyPage when consumes Action.Timeout', () {
+      var newPage = page.consume(Action.Timeout);
 
-      expect(newState, isInstanceOf<ReadyState>());
-      expect(newState.data, equals(state.data));
-      expect(newState.words, equals(state.words));
-      expect(newState.team, equals(1)); // next team
+      expect(newPage, isInstanceOf<ReadyPage>());
+      expect(newPage.data, equals(page.data));
+      expect(newPage.words, equals(page.words));
+      expect(newPage.team, equals(1)); // next team
     });
   });
-  group('ReadyState', () {
+  group('ReadyPage', () {
     
-    test('returns TimerState when consumes Action.Ready', () {
-      var state = ReadyState(0, {}, ['foo']);
+    test('returns TimerPage when consumes Action.Next', () {
+      var page = ReadyPage(0, {}, ['foo']);
 
-      var newState = state.consume(Action.Ready);
+      var newPage = page.consume(Action.Next);
 
-      expect(newState, isInstanceOf<TimerState>());
+      expect(newPage, isInstanceOf<TimerPage>());
     });
   });
 }
