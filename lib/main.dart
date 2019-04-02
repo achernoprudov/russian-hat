@@ -1,21 +1,14 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import "package:flare_flutter/flare_actor.dart";
-import 'package:russian_hat/page.dart';
+import 'page.dart';
 
 void main() => runApp(App());
 
-final dynamic data = {
-  0:0, 1:0,
-  'rPrepare0': 'You are cute kitties team and only you can fight these bold puppies!\n\nPress the button when you ready!',
-  'rPrepare1': 'You are brave puppies team and there is your chance to show who is boss there!\n\nPress the button when you ready!',
-  'rScore': 'Score',
-  'rRules': 'Hi there! It is russian hat!\nIts team game where you have to bla-bla.\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n\ndfd\ndfd\ndfd\n',
-  'rAgain': 'It was fun. We want more!',
-  'rReady': 'We are ready! Let\'s rock!',
-  'rDone': 'Ez! We did it!',
-  'rSkip': 'No, they cant :(',
-  'words': ['Cat', 'Bat', 'Mat', 'Sad', 'Simplification', 'Foo', 'Bar', 'Zoo'],
-};
+Future<Map<dynamic, dynamic>> fetch() => rootBundle
+    .loadString('res/data.json')
+    .then((data) => json.decode(data));
 
 class App extends StatelessWidget {
   @override
@@ -26,7 +19,8 @@ class App extends StatelessWidget {
         alignment: Alignment.center,
         padding: EdgeInsets.all(30),
         child: SingleChildScrollView(
-          child: Screen(data),
+          child: FutureBuilder(future: fetch(), 
+          builder: (_, snp) => snp.hasData ? Screen(snp.data) : Text('loading')),
         ))),
     );
   }
@@ -41,6 +35,9 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   Page page;
+
+  dynamic get data => page.data;
+
   _ScreenState(this.page) {
     Stream.periodic(Duration(seconds: 1)).listen((_) => send(Action.Tick));
   }
@@ -68,8 +65,8 @@ class _ScreenState extends State<Screen> {
     if (page is ScorePage) return Column(children: [
       Text(data['rScore'], style: head),
       space,
-      Text('Kitties: ${data[0]}', style: body),
-      Text('Puppies: ${data[1]}', style: body),
+      Text('Kitties: ${data['0']}', style: body),
+      Text('Puppies: ${data['1']}', style: body),
       space,
       btn(true, data['rAgain']),
     ],);

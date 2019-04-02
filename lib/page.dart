@@ -35,7 +35,7 @@ class TimerPage extends Page {
       return this;
     }
     if (action == Action.Next) {
-      data[team] += 1;
+      data['$team'] += 1;
       words.removeAt(0);
       if (words.isEmpty) {
         return ScorePage(data);
