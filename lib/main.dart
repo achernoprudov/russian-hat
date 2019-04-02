@@ -15,15 +15,22 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Scaffold(body: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(30),
-        child: SingleChildScrollView(
-          child: FutureBuilder(future: fetch(), 
-          builder: (_, snp) => snp.hasData ? Screen(snp.data) : Text('loading')),
-        ))),
+      home: Scaffold(body: Stack(children: [back(), screen()])),
     );
   }
+
+  back() => FlareActor('res/bg.flr', 
+    alignment: Alignment.center, 
+    fit: BoxFit.fitHeight, 
+    animation: "run");
+  
+  screen() => Container(
+    alignment: Alignment.center,
+    padding: EdgeInsets.all(30),
+    child: SingleChildScrollView(
+      child: FutureBuilder(future: fetch(), 
+      builder: (_, snp) => snp.hasData ? Screen(snp.data) : Text('loading')),
+    ));
 }
 
 class Screen extends StatefulWidget {

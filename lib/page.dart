@@ -15,7 +15,7 @@ class InitPage extends Page {
   InitPage(data) : super(0, data, [], 0);
 
   @override
-  consume(action) => action ==Action.Next ? ReadyPage(0, data, data['words']) : this;
+  consume(action) => action == Action.Next ? ReadyPage(0, data, data['words']) : this;
 }
 
 class ReadyPage extends Page {
@@ -31,16 +31,12 @@ class TimerPage extends Page {
   consume(action) {
     if (action == Action.Tick) {
       time--;
-      if (time < 0) return ReadyPage(next(), data, words);
-      return this;
+      return time < 0 ? ReadyPage(next(), data, words) : this;
     }
     if (action == Action.Next) {
       data['$team'] += 1;
       words.removeAt(0);
-      if (words.isEmpty) {
-        return ScorePage(data);
-      }
-      return this;
+      return words.isEmpty ? ScorePage(data) : this;
     }
     if (action == Action.Skip) {
       words.shuffle();
