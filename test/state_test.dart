@@ -50,7 +50,7 @@ void main() {
 
     test(
         'returns ReadyPage when consumes Action.Timeout', () {
-      var newPage = page.consume(Action.Timeout);
+      var newPage = page.consume(Action.Tick);
 
       expect(newPage, isInstanceOf<ReadyPage>());
       expect(newPage.data, equals(page.data));

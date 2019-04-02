@@ -6,9 +6,14 @@ void main() => runApp(App());
 
 final dynamic data = {
   0:0, 1:0,
+  'rPrepare0': 'You are cute kitties and only you can fight these bold puppies!\n\nPress the button when you ready!',
+  'rPrepare1': 'You are brave puppies and there is your chance to show who is boss there!\n\nPress the button when you ready!',
+  'rScore': 'Score',
+  'rAgain': 'It was fun. We want more!',
+  'rReady': 'We are ready! Let\'s rock!',
   'rDone': 'Ez! We did it!',
   'rSkip': 'No, they cant :(',
-  'words': ['Cat', 'Bat', 'Mat', 'Sad', 'Simplification'],
+  'words': ['Cat', 'Bat', 'Mat', 'Sad', 'Simplification', 'Foo', 'Bar', 'Zoo'],
 };
 
 class App extends StatelessWidget {
@@ -16,17 +21,14 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Home(),
+      home: Scaffold(body: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [Screen(data)],
+        ))),
     );
-  }
-}
-
-class Home extends StatelessWidget {
-  const Home();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Screen(data));
   }
 }
 
@@ -39,67 +41,54 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   Page page;
-  _ScreenState(this.page);
+  _ScreenState(this.page) {
+    Stream.periodic(Duration(seconds: 1)).listen((_) => send(Action.Tick));
+  }
 
   @override
   Widget build(BuildContext context) {
     var text = Theme.of(context).textTheme;
+    var sub = text.headline;
+    var body = text.display2;
+    var head = text.display4;
     var space = SizedBox(width: 20, height: 30);
 
-    if (page is ReadyPage) return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(30),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Command ${page.team}'),
-          space,
-          btn(true),
-        ],
-      ),
+    if (page is ReadyPage) return Column(
+      children: [
+        Text(data['rPrepare${page.team}'], style: sub),
+        space,
+        btn(true, data['rReady']),
+      ],
     );
 
-    if (page is ScorePage) return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(30),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Horray!', style: text.display3),
-          Text('Command 2 win!!!', style: text.display3),
-          space,
-          btn(true),
-        ],
-      ),
+    if (page is ScorePage) return Column(
+      children: [
+        Text(data['rScore'], style: head),
+        space,
+        Text('Kitties: ${data[0]}', style: body),
+        Text('Puppies: ${data[1]}', style: body),
+        space,
+        btn(true, data['rAgain']),
+      ],
     );
 
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(30),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          StreamBuilder(
-            stream: Stream.periodic(Duration(seconds: 1), (i) => 10 - i),
-            builder: (ctx, snp) {
-              var tick = snp?.data ?? 60;
-              return Text('$tick', style: text.display4,);
-            },
-          ),
-          space,
-          Text(page.word(), style: text.display3),
-          space,
-          Row(children: [btn(true), space, btn(false)])
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('${page.time}', style: head,),
+        space,
+        Text(page.word(), style: body),
+        space,
+        Row(children: [btn(true, data['rDone']), space, btn(false, data['rSkip'])])
+      ],
     );
   }
 
-  Widget btn(next) {
+  Widget btn(next, title) {
      return FlatButton(
         color: next ? Colors.green : Colors.red,
         padding: EdgeInsets.all(30),
-        child: Text(next ? data['rDone'] : data['rSkip']),
+        child: Text(title),
         onPressed: () => send(next ? Action.Next : Action.Skip),
       );
   }
