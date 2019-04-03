@@ -12,6 +12,13 @@ abstract class Page {
   String teamRes() => 'res/${team == 0 ? 'cat' : 'robot'}.flr';
 }
 
+class LoadingPage extends Page {
+  LoadingPage() : super(0, {}, [], 0);
+
+  @override
+  Page consume(Action action) => this;
+}
+
 class InitPage extends Page {
   InitPage(data) : super(0, data, [], 0);
 

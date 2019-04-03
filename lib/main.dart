@@ -6,10 +6,6 @@ import 'page.dart';
 
 void main() => runApp(App());
 
-Future<Map<dynamic, dynamic>> fetch() => rootBundle
-    .loadString('res/data.json')
-    .then((data) => json.decode(data));
-
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -27,26 +23,22 @@ class App extends StatelessWidget {
   screen() => Container(
     alignment: Alignment.center,
     padding: EdgeInsets.all(30),
-    child: SingleChildScrollView(
-      child: FutureBuilder(future: fetch(), 
-      builder: (_, snp) => snp.hasData ? Screen(snp.data) : Text('loading')),
-    ));
+    child: SingleChildScrollView(child: Screen()));
 }
 
 class Screen extends StatefulWidget {
-  dynamic data;
-  Screen(this.data);
   @override
-  _ScreenState createState() => _ScreenState(InitPage(data));
+  _ScreenState createState() => _ScreenState();
 }
 
 class _ScreenState extends State<Screen> {
-  Page page;
+  Page page = LoadingPage();
 
   dynamic get data => page.data;
 
-  _ScreenState(this.page) {
+  _ScreenState() {
     Stream.periodic(Duration(seconds: 1)).listen((_) => send(Action.Tick));
+    initScreen();
   }
 
   @override
@@ -56,6 +48,8 @@ class _ScreenState extends State<Screen> {
     var body = text.display2;
     var head = text.display4;
     var space = SizedBox(width: 20, height: 30);
+
+    if (page is LoadingPage) return Text('loading');
 
     if (page is InitPage) return Column(children: [
       space, space,
@@ -74,7 +68,11 @@ class _ScreenState extends State<Screen> {
       Text(data['rScore'], style: head),
       Text('Kitties: ${data['0']}', style: body),
       Text('Robots: ${data['1']}', style: body),
-      space, btn(true, data['rAgain']),
+      space, FlatButton(
+        color: Colors.green,
+        padding: EdgeInsets.all(30),
+        child: Text(data['rAgain']),
+        onPressed: initScreen),
     ],);
 
     return Column(
@@ -103,4 +101,10 @@ class _ScreenState extends State<Screen> {
   );
 
   send(Action action) => setState(() => page = page.consume(action));
+
+  initScreen() => rootBundle
+    .loadString('res/data.json')
+    .then((data) => json.decode(data))
+    .then((data) => InitPage(data))
+    .then((initPage) => setState(() => page = initPage));
 }
