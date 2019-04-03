@@ -67,27 +67,22 @@ class _ScreenState extends State<Screen> {
     if (page is ReadyPage) return Column(children: [
       flare(page.teamRes()),
       Text(data['rPrepare${page.team}'], style: sub),
-      space,
-      btn(true, data['rReady']),
+      space, btn(true, data['rReady']),
     ],);
 
     if (page is ScorePage) return Column(children: [
       Text(data['rScore'], style: head),
-      space,
       Text('Kitties: ${data['0']}', style: body),
       Text('Robots: ${data['1']}', style: body),
-      space,
-      btn(true, data['rAgain']),
+      space, btn(true, data['rAgain']),
     ],);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        flare(page.teamRes()),
-        Text('${page.time}', style: head,),
-        space,
-        Text(page.word(), style: body),
-        space,
+        Text('${page.time}', style: head,), space,
+        Text(page.word(), style: body), space,
+        flare(page.teamRes()), space,
         Row(children: [btn(true, data['rDone']), space, btn(false, data['rSkip'])])
       ],
     );
