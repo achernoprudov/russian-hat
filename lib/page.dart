@@ -9,13 +9,14 @@ abstract class Page {
   Page consume(Action action);
 
   String word() => words.first;
+  String teamRes() => 'res/${team == 0 ? 'cat' : 'robot'}.flr';
 }
 
 class InitPage extends Page {
   InitPage(data) : super(0, data, [], 0);
 
   @override
-  consume(action) => action == Action.Next ? ReadyPage(0, data, data['words']) : this;
+  consume(action) => action == Action.Next ? ReadyPage(0, data, List<String>.from(data['words'])) : this;
 }
 
 class ReadyPage extends Page {

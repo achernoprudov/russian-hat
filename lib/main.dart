@@ -58,12 +58,14 @@ class _ScreenState extends State<Screen> {
     var space = SizedBox(width: 20, height: 30);
 
     if (page is InitPage) return Column(children: [
+      space, space,
       flare("res/hat.flr"),
       Text(data['rRules'], style: sub,),
       btn(true, data['rReady']),
     ],);
 
     if (page is ReadyPage) return Column(children: [
+      flare(page.teamRes()),
       Text(data['rPrepare${page.team}'], style: sub),
       space,
       btn(true, data['rReady']),
@@ -73,7 +75,7 @@ class _ScreenState extends State<Screen> {
       Text(data['rScore'], style: head),
       space,
       Text('Kitties: ${data['0']}', style: body),
-      Text('Puppies: ${data['1']}', style: body),
+      Text('Robots: ${data['1']}', style: body),
       space,
       btn(true, data['rAgain']),
     ],);
@@ -81,6 +83,7 @@ class _ScreenState extends State<Screen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        flare(page.teamRes()),
         Text('${page.time}', style: head,),
         space,
         Text(page.word(), style: body),
