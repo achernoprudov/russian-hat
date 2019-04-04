@@ -8,8 +8,8 @@
     "rRules": "Russian hat is a team game for funny company where you have to find out who are better - kitties or robots.\n\nMain point - to explain words and to guess them.\n\nRules:\nFirstly you have to split into two teams: robots and kitties. Two persons in each team as minimum.\nChoose one teammate who will show other teammates word on screen. Other teammates have to guess this word. Teams play by turns. While first team plays second team must be silent and wait for turn. Be careful only 30 seconds for round.\n\nLead must use only gestures. No speaking or mooing! If word is guessed lead must push 'Ez! Next please!' button, get point and fetch next word. If your team can't understand word you can just skip it with 'No, impossibru!' button. In that case word returns to hat.\n\nThe game is over as soon as words over in hat. Team with maximum points wins.\n\nHave fun!\n",
     "rAgain": "It was fun. Play again!",
     "rReady": "We are ready! Let's rock!",
-    "rDone": "Ezz! We got it!",
-    "rSkip": "No, impossibru!",
+    "rDone": "Ez. Next",
+    "rSkip": "Argh. Skip",
     "words": [
         "Cat",
         "Bat",

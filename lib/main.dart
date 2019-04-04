@@ -80,15 +80,21 @@ class _ScreenState extends State<Screen> {
         Text(page.word(), style: body),
         flare(page.teamRes()), space,
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [btn(data['rDone']), space, btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [btn(data['rDone']), btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
       ],
     );
   }
 
-  Widget btn(title, {color = Colors.green, action = Action.Next}) => RaisedButton(
-    color: color, padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8),
-    child: Text(title), onPressed: () => send(action),
+  Widget btn(title, {color = Colors.green, action = Action.Next}) => Padding(
+    padding: EdgeInsets.zero,
+    child: FlatButton(
+    padding: EdgeInsets.all(20),
+    color: color,
+    child: Text(title),
+    onPressed: () => send(action),
+    shape: new RoundedRectangleBorder(
+    borderRadius: new BorderRadius.circular(30))),
   );
 
   Widget flare(name) => Container(
