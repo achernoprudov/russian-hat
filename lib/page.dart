@@ -1,4 +1,4 @@
-enum Action { Next, Skip, Tick }
+enum Action { Next, Skip, Tick, Rules }
 
 abstract class Page {
   int time;
@@ -14,21 +14,28 @@ abstract class Page {
 
 class LoadingPage extends Page {
   LoadingPage() : super(0, {}, [], 0);
-
   @override
   Page consume(Action action) => this;
 }
 
+class RulesPage extends Page {
+  RulesPage(data) : super(0, data, [], 0);
+  @override
+  consume(action) => action == Action.Next ? InitPage(data) : this;
+}
+
 class InitPage extends Page {
   InitPage(data) : super(0, data, [], 0);
-
   @override
-  consume(action) => action == Action.Next ? ReadyPage(0, data, List<String>.from(data['words'])) : this;
+  consume(action) {
+    if (action == Action.Next) return ReadyPage(0, data, List<String>.from(data['words']));
+    if (action == Action.Rules) return RulesPage(data);
+    return this;
+  }
 }
 
 class ReadyPage extends Page {
   ReadyPage(team, data, remains) : super(team, data, remains, 0);
-
   @override
   consume(action) => action == Action.Next ? TimerPage(team, data, words) : this;
 }
@@ -39,7 +46,7 @@ class TimerPage extends Page {
   consume(action) {
     if (action == Action.Tick) {
       time--;
-      return time < 0 ? ReadyPage(next(), data, words) : this;
+      return time < 0 ? ReadyPage(team ^ 1, data, words) : this;
     }
     if (action == Action.Next) {
       data['$team'] += 1;
@@ -51,13 +58,10 @@ class TimerPage extends Page {
       return this;
     }
   }
-
-  int next() => team ^ 1;
 }
 
 class ScorePage extends Page {
   ScorePage(data) : super(0, data, [], 0);
-
   @override
   consume(action) => action == Action.Next ? ReadyPage(0, data, words) : this;
 }

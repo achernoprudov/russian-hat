@@ -50,11 +50,16 @@ class _ScreenState extends State<Screen> {
 
     if (page is LoadingPage) return Text('loading');
 
+    if (page is RulesPage) return Column(children: [
+      Text('Rules', style: body,),
+      Text(data['rRules'], style: sub,),
+      btn(data['rBack']),
+    ],);
+
     if (page is InitPage) return Column(children: [
       flare("res/hat.flr"),
       Text(data['rWelcome'], style: body,),
-      Text(data['rRules'], style: sub,),
-      btn(data['rReady']),
+      row([btn(data['rPlay']), btn(data['rToRules'], action: Action.Rules)])
     ],);
 
     if (page is ReadyPage) return Column(children: [
@@ -68,37 +73,35 @@ class _ScreenState extends State<Screen> {
       Text('Kitties: ${data['0']}', style: body),
       Text('Robots: ${data['1']}', style: body),
       space, RaisedButton(
-        padding: EdgeInsets.all(30),
         child: Text(data['rAgain']),
         onPressed: initScreen),
     ],);
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Text('${page.time}', style: text.display4,),
         Text(page.word(), style: body),
         flare(page.teamRes()), space,
-        Row( 
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [btn(data['rDone']), btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
+        row([btn(data['rDone']), btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
       ],
     );
   }
 
-  Widget btn(title, {color = Colors.green, action = Action.Next}) => Padding(
+  btn(title, {color = Colors.green, action = Action.Next}) => Padding(
     padding: EdgeInsets.zero, child: FlatButton(
       padding: EdgeInsets.all(20), color: color, onPressed: () => send(action),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       child: Text(title)),
   );
 
-  Widget flare(name) => Container(
+  flare(name) => Container(
     height: 200, child: FlareActor(name, 
     alignment: Alignment.topCenter, 
     fit: BoxFit.fitHeight, 
     animation: "run"),
   );
+
+  row(List<Widget> items) => Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: items);
 
   send(Action action) => setState(() => page = page.consume(action));
 
