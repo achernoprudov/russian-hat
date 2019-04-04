@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import "package:flare_flutter/flare_actor.dart";
+import 'package:audioplayers/audio_cache.dart';
 import 'page.dart';
 
 void main() => runApp(App());
@@ -26,15 +27,16 @@ class App extends StatelessWidget {
 
 class Screen extends StatefulWidget {
   @override
-  _ScreenState createState() => _ScreenState();
+  ScreenState createState() => ScreenState();
 }
 
-class _ScreenState extends State<Screen> {
+class ScreenState extends State<Screen> {
   Page page = LoadingPage();
 
   dynamic get data => page.data;
 
-  _ScreenState() {
+  ScreenState() {
+    AudioCache().loop('song.m4a');
     Stream.periodic(Duration(seconds: 1)).listen((_) => send(Action.Tick));
     initScreen();
   }
@@ -55,8 +57,7 @@ class _ScreenState extends State<Screen> {
     ],);
 
     if (page is InitPage) return Column(children: [
-      flare("res/hat.flr"),
-      Text(data['rWelcome'], style: head,),
+      flare("res/hat.flr"), Text(data['rWelcome'], style: head,),
       row([btn(data['rPlay']), btn(data['rToRules'], action: Action.Rules)])
     ],);
 
@@ -105,7 +106,7 @@ class _ScreenState extends State<Screen> {
 
   initScreen() => rootBundle
     .loadString('res/data.json')
-    .then((data) => json.decode(data))
+    .then(json.decode)
     .then((data) => InitPage(data))
     .then((initPage) => setState(() => page = initPage));
 }
