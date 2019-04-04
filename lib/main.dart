@@ -54,21 +54,20 @@ class _ScreenState extends State<Screen> {
       flare("res/hat.flr"),
       Text(data['rWelcome'], style: body,),
       Text(data['rRules'], style: sub,),
-      btn(true, data['rReady']),
+      btn(data['rReady']),
     ],);
 
     if (page is ReadyPage) return Column(children: [
       flare(page.teamRes()),
       Text(data['rPrepare${page.team}'], style: sub),
-      space, btn(true, data['rReady']),
+      space, btn(data['rReady']),
     ],);
 
     if (page is ScorePage) return Column(children: [
       Text(data['rScore'], style: text.display3),
       Text('Kitties: ${data['0']}', style: body),
       Text('Robots: ${data['1']}', style: body),
-      space, FlatButton(
-        color: Colors.green,
+      space, RaisedButton(
         padding: EdgeInsets.all(30),
         child: Text(data['rAgain']),
         onPressed: initScreen),
@@ -82,16 +81,14 @@ class _ScreenState extends State<Screen> {
         flare(page.teamRes()), space,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [btn(true, data['rDone']), space, btn(false, data['rSkip'])])
+          children: [btn(data['rDone']), space, btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
       ],
     );
   }
 
-  Widget btn(next, title) => FlatButton(
-    color: next ? Colors.green : Colors.red,
-    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8),
-    child: Text(title),
-    onPressed: () => send(next ? Action.Next : Action.Skip),
+  Widget btn(title, {color = Colors.green, action = Action.Next}) => RaisedButton(
+    color: color, padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8),
+    child: Text(title), onPressed: () => send(action),
   );
 
   Widget flare(name) => Container(
