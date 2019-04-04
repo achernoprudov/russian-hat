@@ -24,9 +24,9 @@ void main() {
     dynamic data;
 
     setUpAll(() async {
-      data = await rootBundle
-        .loadString('res/data.json')
-        .then((data) => json.decode(data));
+      // data = await rootBundle
+      //   .loadString('res/data.json')
+      //   .then((data) => json.decode(data));
     });
 
     for (var resourceCode in resourcesForTest) {
