@@ -8,12 +8,10 @@ void main() => runApp(App());
 
 class App extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: Scaffold(body: Stack(children: [back(), screen()])),
-    );
-  }
+  Widget build(_) => MaterialApp(
+    theme: ThemeData.dark(),
+    home: Scaffold(body: Stack(children: [back(), screen()])),
+  );
 
   back() => FlareActor('res/bg.flr', 
     alignment: Alignment.center, 
@@ -45,20 +43,20 @@ class _ScreenState extends State<Screen> {
   Widget build(BuildContext context) {
     var text = Theme.of(context).textTheme;
     var sub = text.subtitle;
-    var body = text.display1;
+    var head = text.display1;
     var space = SizedBox(width: 20, height: 30);
 
     if (page is LoadingPage) return Text('loading');
 
     if (page is RulesPage) return Column(children: [
-      Text('Rules', style: body,),
+      Text('Rules', style: head,),
       Text(data['rRules'], style: sub,),
       btn(data['rBack']),
     ],);
 
     if (page is InitPage) return Column(children: [
       flare("res/hat.flr"),
-      Text(data['rWelcome'], style: body,),
+      Text(data['rWelcome'], style: head,),
       row([btn(data['rPlay']), btn(data['rToRules'], action: Action.Rules)])
     ],);
 
@@ -70,8 +68,8 @@ class _ScreenState extends State<Screen> {
 
     if (page is ScorePage) return Column(children: [
       Text(data['rScore'], style: text.display3),
-      Text('Kitties: ${data['0']}', style: body),
-      Text('Robots: ${data['1']}', style: body),
+      Text('Kitties: ${data['0']}', style: head),
+      Text('Robots: ${data['1']}', style: head),
       space, RaisedButton(
         child: Text(data['rAgain']),
         onPressed: initScreen),
@@ -80,7 +78,7 @@ class _ScreenState extends State<Screen> {
     return Column(
       children: [
         Text('${page.time}', style: text.display4,),
-        Text(page.word(), style: body),
+        Text(page.word(), style: head),
         flare(page.teamRes()), space,
         row([btn(data['rDone']), btn(data['rSkip'], color: Colors.red, action: Action.Skip)])
       ],
