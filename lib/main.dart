@@ -44,16 +44,15 @@ class _ScreenState extends State<Screen> {
   @override
   Widget build(BuildContext context) {
     var text = Theme.of(context).textTheme;
-    var sub = text.headline;
-    var body = text.display2;
-    var head = text.display4;
+    var sub = text.subtitle;
+    var body = text.display1;
     var space = SizedBox(width: 20, height: 30);
 
     if (page is LoadingPage) return Text('loading');
 
     if (page is InitPage) return Column(children: [
-      space, space,
       flare("res/hat.flr"),
+      Text(data['rWelcome'], style: body,),
       Text(data['rRules'], style: sub,),
       btn(true, data['rReady']),
     ],);
@@ -65,7 +64,7 @@ class _ScreenState extends State<Screen> {
     ],);
 
     if (page is ScorePage) return Column(children: [
-      Text(data['rScore'], style: head),
+      Text(data['rScore'], style: text.display3),
       Text('Kitties: ${data['0']}', style: body),
       Text('Robots: ${data['1']}', style: body),
       space, FlatButton(
@@ -78,17 +77,19 @@ class _ScreenState extends State<Screen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('${page.time}', style: head,), space,
-        Text(page.word(), style: body), space,
+        Text('${page.time}', style: text.display4,),
+        Text(page.word(), style: body),
         flare(page.teamRes()), space,
-        Row(children: [btn(true, data['rDone']), space, btn(false, data['rSkip'])])
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [btn(true, data['rDone']), space, btn(false, data['rSkip'])])
       ],
     );
   }
 
   Widget btn(next, title) => FlatButton(
     color: next ? Colors.green : Colors.red,
-    padding: EdgeInsets.all(30),
+    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8),
     child: Text(title),
     onPressed: () => send(next ? Action.Next : Action.Skip),
   );
