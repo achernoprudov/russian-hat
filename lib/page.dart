@@ -55,8 +55,8 @@ class TimerPage extends Page {
     }
     if (action == Action.Skip) {
       words.shuffle();
-      return this;
     }
+    return this;
   }
 }
 

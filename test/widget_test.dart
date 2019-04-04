@@ -7,21 +7,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import "package:flare_flutter/flare_actor.dart";
 
 import 'package:russian_hat/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    // await tester.pumpWidget(MyApp());
+  testWidgets('Test start screen is displayed', (WidgetTester tester) async {
+    await tester.pumpWidget(App());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pump();
+
+    // expect(find.text('\nWelcome to Russian Hat!\n'), findsOneWidget);
+    expect(find.byType(FlareActor), findsOneWidget);
+
+    expect(find.text('Play game'), findsOneWidget);
+    expect(find.text('Show rules'), findsOneWidget);
 
     // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // await tester.tap(find.byIcon(Icons.add));
+    // await tester.pump();
 
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
