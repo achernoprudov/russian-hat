@@ -28,7 +28,11 @@ class InitPage extends Page {
   InitPage(data) : super(0, data, [], 0);
   @override
   consume(action) {
-    if (action == Action.Next) return ReadyPage(0, data, List<String>.from(data['words']));
+    if (action == Action.Next) {
+      var words = List<String>.from(data['words']);
+      words.shuffle();
+      return ReadyPage(0, data, words.take(20).toList());
+    } 
     if (action == Action.Rules) return RulesPage(data);
     return this;
   }
@@ -41,7 +45,7 @@ class ReadyPage extends Page {
 }
 
 class TimerPage extends Page {
-  TimerPage(team, data, remains) : super(team, data, remains, 10);
+  TimerPage(team, data, remains) : super(team, data, remains, 30);
   @override
   consume(action) {
     if (action == Action.Tick) {
