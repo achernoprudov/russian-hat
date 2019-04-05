@@ -1,16 +1,8 @@
-# russian_hat
+# Russian Hat
 
-A new Flutter project.
+A Flutter project for the Flutter Create contest.
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+Russian Hat is an intellectual team game (close analog is Alias). Particiants split into two teams and play several rounds. In each round a team choose a lead player who will describe words on the screen using only gestures. Other teammates have to guess this word. Oponent team keep quiet and wait for turn.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
