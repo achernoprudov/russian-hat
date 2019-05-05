@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import "package:flare_flutter/flare_actor.dart";
 import 'package:audioplayers/audio_cache.dart';
+import 'package:russian_hat/src/screens/start/start_screen.dart';
 import 'page.dart';
 
 void main() => runApp(App());
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
   @override
   Widget build(_) => MaterialApp(
     theme: ThemeData.dark(),
-    home: Scaffold(body: Stack(children: [back(), screen()])),
+    home: StartScreen(),
   );
 
   back() => FlareActor('res/bg.flr', 
